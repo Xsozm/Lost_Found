@@ -50,7 +50,6 @@ class ItemController extends Controller
     public function show( $id)
     {
         $item = Item::find($id)->first();
-        if(!is_null($item))
         return response()->json($item,200);
 
     }
