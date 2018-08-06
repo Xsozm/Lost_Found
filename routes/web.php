@@ -17,5 +17,6 @@ Route::get('/', function () {
 
 
 Route::get('/hazem',function (){
-    return 'hazem';
+   $users = App\User::all();
+   return $users;
 });
