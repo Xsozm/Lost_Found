@@ -1,12 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Validator;
 use App\Item;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +21,7 @@ class ItemController extends Controller
     public function index()
     {
         $items = Item::all();
-        //return response()->json()
+
         return response()->json($items,200);
 
     }
@@ -25,10 +31,7 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -37,7 +40,38 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
+
     {
+
+
+        $rules = [
+            'name'=>'bail|required|min:3|max:255',
+            'place' => 'bail|required|max:255',
+            'found' =>'bail|required|boolean',
+            'description' =>'bail|max:255'];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails())
+        {
+            return response()->json(array(
+                'success' => false,
+                'errors' => $validator->getMessageBag()->toArray()
+
+            ), 400); // 400 being the HTTP code for an invalid request.
+        }
+
+        $user = auth()->user();
+
+        $item = new Item();
+        $item->name=$request->input('name');
+        $item->place=$request->input('place');
+        $item->found=$request->input('found');
+        $item->description=$request->input('description');
+        $item->user_id=$user->id;
+        $item->save();
+        return response()->json(array('message'=>'Created Successfully','item'=>$item),200);
+
+
+
         //
     }
 
@@ -72,9 +106,44 @@ class ItemController extends Controller
      * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request, $id)
     {
-        //
+        $rules = [
+            'name'=>'bail|required|min:3|max:255',
+            'place' => 'bail|required|max:255',
+            'found' =>'bail|required|boolean',
+            'description' =>'max:255'];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails())
+        {
+            return response()->json(array(
+                'success' => false,
+                'errors' => $validator->getMessageBag()->toArray()
+
+            ), 400); // 400 being the HTTP code for an invalid request.
+        }
+
+
+
+        $item = Item::find($id);
+
+
+        if($item==null)
+        {
+            return response()->json('Item Not Found',404);
+        }
+
+
+        $user = auth()->user();
+
+        $item->name=$request->input('name');
+        $item->place=$request->input('place');
+        $item->found=$request->input('found');
+        $item->description=$request->input('description');
+        $item->user_id=$user->id;
+        $item->save();
+        return response()->json(['message'=>'Updated Successfully','item'=>$item],200);
+
     }
 
     /**
@@ -83,8 +152,16 @@ class ItemController extends Controller
      * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Item $item)
+    public function destroy($id)
     {
-        //
+        $item = Item::find($id);
+
+        if($item==null)
+        {
+            return response()->json('Item Not Found',404);
+        }
+        $item->delete();
+        return response()->json('Deleted Successfully',200);
+
     }
 }

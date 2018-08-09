@@ -17,7 +17,7 @@ class CreateItemsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('place');
-            $table->text('description');
+            $table->text('description')->default(null);
             $table->boolean('found');// 1 found 0 lost
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
