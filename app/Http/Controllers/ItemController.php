@@ -88,16 +88,6 @@ class ItemController extends Controller
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Item  $item
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Item $item)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -118,7 +108,7 @@ class ItemController extends Controller
         {
             return response()->json(array(
                 'success' => false,
-                'errors' => $validator->getMessageBag()->toArray()
+                'errors' => $validator->errors()
 
             ), 400); // 400 being the HTTP code for an invalid request.
         }
