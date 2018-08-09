@@ -108,6 +108,7 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
+        return $request->_method;
         $rules = [
             'name'=>'bail|required|min:3|max:255',
             'place' => 'bail|required|max:255',
