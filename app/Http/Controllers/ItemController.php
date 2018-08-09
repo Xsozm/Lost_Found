@@ -108,7 +108,7 @@ class ItemController extends Controller
         {
             return response()->json(array(
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->getMessageBag()->toArray()
 
             ), 400); // 400 being the HTTP code for an invalid request.
         }
