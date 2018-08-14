@@ -89,6 +89,44 @@ class ItemController extends Controller
     }
 
 
+    public function show_all_items(){
+        $user = auth()->user();
+        if ($user->role != 'admin'){
+            return response()->json('Unauthorized Action',401);
+        }
+        $items= Item::all();
+
+
+
+        return response()->json($items);
+
+    }
+
+    public function show_confirmed_items(){
+        $user = auth()->user();
+        if ($user->role != 'admin'){
+            return response()->json('Unauthorized Action',401);
+        }
+        $items= Db::table('items')->where('confirmed','=',true)->get();
+
+
+
+        return response()->json($items);
+    }
+
+    public function show_not_confirmed_tags(){
+        $user = auth()->user();
+        if ($user->role != 'admin'){
+            return response()->json('Unauthorized Action',401);
+        }
+        $items= Db::table('items')->where('confirmed','=',false)->get();
+
+
+
+        return response()->json($items);
+    }
+
+
     /**
      * Update the specified resource in storage.
      *
@@ -124,7 +162,13 @@ class ItemController extends Controller
         }
 
 
+
         $user = auth()->user();
+
+        $items = $user->items;
+        if(!$items->contains('id',$item->id)){
+            return response()->json('Unauthorized Action',401);
+        }
 
         $item->name=$request->input('name');
         $item->place=$request->input('place');
@@ -150,8 +194,17 @@ class ItemController extends Controller
         {
             return response()->json('Item Not Found',404);
         }
-        $item->delete();
-        return response()->json('Deleted Successfully',200);
+        $user=auth()->user();
+
+        if(isset($item->user_id) && $item->user_id==$user->id || $user->role=='admin'){
+            $item->delete();
+            return response()->json('Deleted Successfully',200);
+
+
+        }else{
+            return response()->json('Unauthorized Action',401);
+
+        }
 
     }
 }

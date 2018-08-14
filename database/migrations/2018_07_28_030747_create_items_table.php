@@ -19,6 +19,7 @@ class CreateItemsTable extends Migration
             $table->string('place');
             $table->text('description')->default(null);
             $table->boolean('found');// 1 found 0 lost
+            $table->boolean('confirmed')->default(false);
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
             $table->timestamps();

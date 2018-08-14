@@ -23,6 +23,12 @@ Route::group([
 
 });
 
+Route::post('tags/create_new_tag','TagController@create_new_tag');
+Route::get('tags/show_all_tags','TagController@show_all_tags');
+Route::get('tags/show_confirmed_tags','TagController@show_confirmed_tags');
+Route::get('tags/show_not_confirmed_tags','TagController@show_not_confirmed_tags');
+Route::delete('tags/delete_tag/{id}','TagController@delete_tag');
+
 
 
 Route::apiresource('items','ItemController'); //  Items admin
@@ -30,6 +36,9 @@ Route::apiresource('items','ItemController'); //  Items admin
 Route::group(['prefix'=>'items'],function (){
     Route::apiresource('/{item}/tags','TagController'); // logged in tags for specific item
     Route::apiresource('/{item}/images','ImageController'); // images for specific item
+
+    Route::put('/{item}/tags','TagController@update_tags_for_specific_item');
+
 
 
 });
