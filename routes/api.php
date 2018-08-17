@@ -18,6 +18,7 @@ Route::group([
     Route::post('/logout', 'AuthController@logout'); // logged in with token
     Route::post('/refresh', 'AuthController@refresh'); // logged in with token
     Route::post('/me', 'AuthController@me'); // logged in with token
+    Route::post('/register','AuthController@register');
 
 
 
@@ -43,3 +44,4 @@ Route::group(['prefix'=>'items'],function (){
 
 });
 
+Route::post('/send','AuthController@send');

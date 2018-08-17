@@ -16,7 +16,4 @@ Route::get('/', function () {
 });
 
 
-Route::get('/hazem',function (){
-   $users = App\User::all();
-   return $users;
-});
+Route::get('/activate/{token}','AuthController@activate');

@@ -19,11 +19,11 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role');
-            $table->boolean('isBanned')->default(0);
-            $table->boolean('isActivated')->default(0);
+            $table->boolean('isBanned')->default(false);
+            $table->boolean('verified')->default(false);
             $table->string('mob');
-            $table->string('facebook');
-            $table->string('whatsapp');
+            $table->string('facebook')->default("");
+            $table->string('whatsapp')->default("");
             $table->rememberToken();
             $table->timestamps();
         });

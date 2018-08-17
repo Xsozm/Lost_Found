@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Verification_Token;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Mail;
 
 class UserController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      *
