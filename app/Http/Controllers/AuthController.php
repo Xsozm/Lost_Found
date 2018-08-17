@@ -19,7 +19,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login','register','activate']]);
-        $this->middleware('verified',['except' => ['register','activate']]);
+       // $this->middleware('verified',['except' => ['register','activate']]);
     }
 
     public function activate($token){
