@@ -19,7 +19,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login','register','activate']]);
-       // $this->middleware('verified',['except' => ['register','activate']]);
+        $this->middleware('verified',['except' => ['login','register','activate']]);
     }
 
     public function activate($token){
@@ -73,7 +73,7 @@ class AuthController extends Controller
 
         Mail::to($user->email)->send(new Verification_Token($user,$token));
 
-       return response()->json("Registration Done Successfully , PLease Activate your account through sent link");
+       return response()->json("Registration Done Successfully , PLease Activate your account through sent link",200);
 
 
 
@@ -87,10 +87,30 @@ class AuthController extends Controller
      */
     public function login()
     {
+        $rules = ['email' => 'bail|required|unique:users,email|min:2|max:60',
+           'password' => 'bail|required|min:6|max:30'];
+        $validator = Validator::make(request(['email', 'password']),$rules);
+        if ($validator->fails()){
+            return response()->json(array(
+                'success' => false,
+                'errors' => $validator->getMessageBag()->toArray()
+
+            ), 400); // 400 being the HTTP code for an invalid request.
+        }
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token =auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $user =User::where('email','=',$credentials['email'])->first();
+        if (!$user->verified){
+            $v = $user->verify_token;
+            $v->token=$token;
+            $v->save();
+            Mail::to($user->email)->send(new Verification_Token($user,$token));
+            return response()->json("Verification Mail sent to Activate Your Account ",200);
+
         }
 
         return $this->respondWithToken($token);

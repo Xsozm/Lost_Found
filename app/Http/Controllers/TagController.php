@@ -13,7 +13,7 @@ class TagController extends Controller
 {
 
     function create_new_tag(Request $request){
-        $rules = ['tag' => 'bail|required|string|min:3|max:20|unique:tags,name'];
+        $rules = ['tag' => 'bail|required|string|min:2|max:20|unique:tags,name'];
         $validator = Validator::make($request->all(),$rules);
         if ($validator->fails()){
             return response()->json(array(
@@ -35,6 +35,8 @@ class TagController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
+        $this->middleware('verified');
+
     }
 
     /**
@@ -120,13 +122,7 @@ class TagController extends Controller
 
         }
 
-//        $tags_array = $request->tags;
-//        if (is_array($tags_array) && sizeof($tags_array)==0){
-//            return response()->json('You should have at least one tag',412);
-//        }
-//        if (is_array($tags_array) && sizeof($tags_array)>=6){
-//            return response()->json('You should have at most five tags',412);
-//        }
+
 
 
         $rules = [
@@ -142,7 +138,6 @@ class TagController extends Controller
             ), 400); // 400 being the HTTP code for an invalid request.
         }
         $names = $request->tags;
-        $item->tags()->detach();
         foreach ($names as $name){
             $tag = Tag::where('name','=',$name);
             if($tag!=null ){
@@ -193,6 +188,7 @@ class TagController extends Controller
             ), 400); // 400 being the HTTP code for an invalid request.
         }
         $names = $request->tags;
+        $item->tags()->detach();
         foreach ($names as $name){
             $tag = Tag::where('name','=',$name);
             if($tag!=null ){

@@ -16,10 +16,11 @@ class verified
     public function handle($request, Closure $next)
     {
         $user =auth()->user();
-        if($user->verified)
-            return $next($request);
-        else{
-            return response()->json("Please Verify Your Account");
-        }
+        if (!$user->verified)
+            return response()->json("Please Verify Your Account",401);
+        if($user->isBanned)
+            return response()->json("Your Account Has been Banned From Our Service for a while , Please Contact the Admin",401);
+        return $next($request);
+
     }
 }

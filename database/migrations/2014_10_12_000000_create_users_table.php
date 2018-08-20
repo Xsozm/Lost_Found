@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('username');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('role');
+            $table->string('role')->default('user');
             $table->boolean('isBanned')->default(false);
             $table->boolean('verified')->default(false);
             $table->string('mob');

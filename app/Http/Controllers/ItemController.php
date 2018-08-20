@@ -11,6 +11,7 @@ class ItemController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
+        $this->middleware('verified');
     }
 
     /**
@@ -20,6 +21,10 @@ class ItemController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+        if ($user->role!='admin'){
+            return response()->json("UnAuthorized Action",401);
+        }
         $items = Item::all();
 
         return response()->json($items,200);
@@ -84,7 +89,17 @@ class ItemController extends Controller
     public function show( $id)
     {
         $item = Item::find($id);
+        if ($item==null){
+            return response()->json("Item Not Found",404);
+        }
+
+        $user = auth()->user();
+
+        if ($user->role=='admin' || $item->user_id ==$user->id)
         return response()->json($item,200);
+        else
+            return response()->json('Unauthorized Action',401);
+
 
     }
 
@@ -165,8 +180,7 @@ class ItemController extends Controller
 
         $user = auth()->user();
 
-        $items = $user->items;
-        if(!$items->contains('id',$item->id)){
+        if($item->uder_id!=$user->id && $user->role!='admin'){
             return response()->json('Unauthorized Action',401);
         }
 
