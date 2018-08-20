@@ -87,7 +87,7 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $rules = ['email' => 'bail|required|unique:users,email|min:2|max:60',
+        $rules = ['email' => 'bail|required|min:2|max:60',
            'password' => 'bail|required|min:6|max:30'];
         $validator = Validator::make(request(['email', 'password']),$rules);
         if ($validator->fails()){
