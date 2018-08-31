@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Tag;
 use Validator;
 use App\Item;
 use Illuminate\Http\Request;
@@ -220,5 +221,40 @@ class ItemController extends Controller
 
         }
 
+    }
+
+    function in($item,$string){
+        return (strpos($item->name, $string) !== false || strpos($item->place, $string) !== false || strpos($item->description, $string) !== false);
+
+    }
+    function in2($item,$string){
+
+        $tags = $item->tags;
+        foreach ($tags as $tag){
+            if(strpos($tag->name, $string)!==false)
+                return true;
+        }
+        return false;
+
+    }
+
+    public function search($string){
+        $items = Item::all();
+        $ans = collect();
+        foreach ($items as $item){
+            if($this->in($item,$string) || $this->in2($item,$string))
+                $ans->push($item);
+
+        }
+        return $ans;
+    }
+
+    function searchbytag($string){
+
+        $tag = Tag::where('name','=',$string)->first();
+        if($tag==null){
+            return response()->json("Tag doesn't exist",404);
+        }
+        return response()->json($tag->items,200);
     }
 }

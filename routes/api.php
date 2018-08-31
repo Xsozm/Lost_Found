@@ -39,6 +39,10 @@ Route::group(['prefix'=>'items'],function (){
     Route::apiresource('/{item}/images','ImageController'); // images for specific item
 
     Route::put('/{item}/tags','TagController@update_tags_for_specific_item');
+    Route::get('/search/{string}','ItemController@search');
+    Route::get('/searchbytag/{string}','ItemController@searchbytag');
+
+
 
 
 
