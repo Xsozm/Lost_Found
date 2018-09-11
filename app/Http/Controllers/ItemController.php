@@ -5,6 +5,8 @@ use App\Tag;
 use Validator;
 use App\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class ItemController extends Controller
 {
@@ -108,7 +110,7 @@ class ItemController extends Controller
     public function show_all_items(){
         $user = auth()->user();
         if ($user->role != 'admin'){
-            return response()->json('Unauthorized Action',401);
+            return response()->json('Unauthorized Action,you need to be an admin to list all items',401);
         }
         $items= Item::all();
 
@@ -121,7 +123,7 @@ class ItemController extends Controller
     public function show_confirmed_items(){
         $user = auth()->user();
         if ($user->role != 'admin'){
-            return response()->json('Unauthorized Action',401);
+            return response()->json('Unauthorized Action,you need to be an admin ',401);
         }
         $items= Db::table('items')->where('confirmed','=',true)->get();
 
@@ -130,7 +132,7 @@ class ItemController extends Controller
         return response()->json($items);
     }
 
-    public function show_not_confirmed_tags(){
+    public function show_not_confirmed_items(){
         $user = auth()->user();
         if ($user->role != 'admin'){
             return response()->json('Unauthorized Action',401);
@@ -239,7 +241,7 @@ class ItemController extends Controller
     }
 
     public function search($string){
-        $items = Item::all();
+        $items= Db::table('items')->where('confirmed','=',true)->get();
         $ans = collect();
         foreach ($items as $item){
             if($this->in($item,$string) || $this->in2($item,$string))

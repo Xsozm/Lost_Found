@@ -31,16 +31,21 @@ Route::get('tags/show_not_confirmed_tags','TagController@show_not_confirmed_tags
 Route::delete('tags/delete_tag/{id}','TagController@delete_tag');
 
 
-
+Route::get('items/show_confirmed_items','ItemController@show_confirmed_items');
+Route::get('items/show_not_confirmed_items','ItemController@show_not_confirmed_items');
 Route::apiresource('items','ItemController'); //  Items admin
 
 Route::group(['prefix'=>'items'],function (){
+
+
     Route::apiresource('/{item}/tags','TagController'); // logged in tags for specific item
     Route::apiresource('/{item}/images','ImageController'); // images for specific item
 
     Route::put('/{item}/tags','TagController@update_tags_for_specific_item');
     Route::get('/search/{string}','ItemController@search');
     Route::get('/searchbytag/{string}','ItemController@searchbytag');
+
+
 
 
 

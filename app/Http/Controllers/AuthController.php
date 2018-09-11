@@ -100,7 +100,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (! $token =auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized ,You need to register first'], 401);
         }
 
         $user =User::where('email','=',$credentials['email'])->first();
@@ -109,7 +109,7 @@ class AuthController extends Controller
             $v->token=$token;
             $v->save();
             Mail::to($user->email)->send(new Verification_Token($user,$token));
-            return response()->json("Verification Mail sent to Activate Your Account ",401);
+            return response()->json("Verification Mail sent to Activate Your Account ",400);
 
         }
 
